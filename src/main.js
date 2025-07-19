@@ -28,15 +28,12 @@ const onFormSubmit = event => {
   showLoader();
 
   getImagesByQuery(searchedText)
-    .finally(() => {
-      hideLoader();
-    })
-    .then(response => {
-      const images = response.data.hits;
+    .then(data => {
+      const images = data.hits;
 
       if (images.length === 0) {
-        iziToast.error({
-          title: 'Error',
+        iziToast.info({
+          title: 'No results',
           message:
             'Sorry, there are no images matching your search query. Please try again!',
           position: 'topRight',
@@ -46,7 +43,15 @@ const onFormSubmit = event => {
       createGallery(images);
     })
     .catch(err => {
-      console.log(err);
+      console.error('Error:', err);
+      iziToast.error({
+        title: 'Error',
+        message: 'Failed to load images. Please try again.',
+        position: 'topRight',
+      });
+    })
+    .finally(() => {
+      hideLoader();
     });
 };
 
